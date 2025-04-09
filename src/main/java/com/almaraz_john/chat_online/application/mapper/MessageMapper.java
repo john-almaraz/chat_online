@@ -11,6 +11,7 @@ import org.mapstruct.Mappings;
 public interface MessageMapper {
 
     @Mappings({
+            @Mapping(target = "id", source = "id", qualifiedByName = "idToUUID"),
             @Mapping(target = "fromUserID", source = "fromUser.id", qualifiedByName = "idToUUID"),
             @Mapping(target = "conversationID", source = "conversation.id", qualifiedByName = "idToUUID")
     })

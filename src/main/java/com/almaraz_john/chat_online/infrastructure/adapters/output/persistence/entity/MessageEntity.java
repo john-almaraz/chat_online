@@ -6,11 +6,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.Instant;
 import java.util.UUID;
 
+@AllArgsConstructor
 @Data
 @Entity
 @Table(name = "message")

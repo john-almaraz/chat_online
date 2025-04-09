@@ -7,5 +7,6 @@ import java.util.UUID;
 
 @Data
 public class ConversationDTO {
+    private UUID id;
     private List<UUID> userIDs;
 }

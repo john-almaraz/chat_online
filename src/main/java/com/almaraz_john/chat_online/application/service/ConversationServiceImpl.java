@@ -9,6 +9,7 @@ import com.almaraz_john.chat_online.application.mapper.ConversationMapper;
 import com.almaraz_john.chat_online.application.ports.input.ConversationService;
 import com.almaraz_john.chat_online.application.ports.output.ConversationRepository;
 import com.almaraz_john.chat_online.application.ports.output.UserRepository;
+import com.almaraz_john.chat_online.common.mapper.IdMapper;
 import com.almaraz_john.chat_online.domain.aggregate.User;
 import com.almaraz_john.chat_online.domain.exception.ConversationNotFoundException;
 import com.almaraz_john.chat_online.domain.exception.UserNotFoundException;
@@ -27,17 +28,14 @@ import java.util.UUID;
 public class ConversationServiceImpl implements ConversationService {
 
     private final ConversationRepository conversationRepository;
-    private final ConversationMapper mapper;
+    private final ConversationMapper conversationMapper;
     private final UserRepository userRepository;
+    private final IdMapper idMapper;
 
     @Override
     public ConversationDTO createConversation(CreateConversationCommand command) {
         ConversationDTO conversationDTO = command.getConversationDTO();
-        List<ID> userIDs = new ArrayList<>();
-
-        for (UUID id : conversationDTO.getUserIDs()){
-            userIDs.add(ID.of(id));
-        }
+        List<ID> userIDs = idMapper.listUuidToID(conversationDTO.getUserIDs());
 
         List<Message> messageList = new ArrayList<>();
         List<User> userList = userRepository.getUsersByIDs(userIDs);
@@ -55,7 +53,7 @@ public class ConversationServiceImpl implements ConversationService {
                 )
         );
 
-        return mapper.toDTO(conversation);
+        return conversationMapper.toDTO(conversation);
     }
 
     @Override
@@ -66,7 +64,7 @@ public class ConversationServiceImpl implements ConversationService {
                 ()-> new ConversationNotFoundException("Conversation with ID: "+ conversationID + " not found.")
         );
 
-        return mapper.toDTO(conversation);
+        return conversationMapper.toDTO(conversation);
     }
 
     @Override
@@ -78,7 +76,7 @@ public class ConversationServiceImpl implements ConversationService {
         if(conversationList.isEmpty())
             throw new ConversationNotFoundException("User with ID: " + userID + " not have conversations.");
 
-        return mapper.toListDTO(conversationList);
+        return conversationMapper.toListDTO(conversationList);
     }
 
     @Override

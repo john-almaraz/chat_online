@@ -1,5 +1,6 @@
 package com.almaraz_john.chat_online.infrastructure.adapters.output.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
@@ -25,6 +26,7 @@ public class UserEntity {
     @NotNull
     private String username;
 
+    @JsonManagedReference
     @ManyToMany(mappedBy = "userEntities")
     private List<ConversationEntity> conversationEntities;
 

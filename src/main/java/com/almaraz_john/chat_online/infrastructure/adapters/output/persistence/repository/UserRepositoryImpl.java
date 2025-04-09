@@ -1,6 +1,7 @@
 package com.almaraz_john.chat_online.infrastructure.adapters.output.persistence.repository;
 
 import com.almaraz_john.chat_online.application.ports.output.UserRepository;
+import com.almaraz_john.chat_online.common.mapper.IdMapper;
 import com.almaraz_john.chat_online.domain.aggregate.User;
 import com.almaraz_john.chat_online.domain.vo.ID;
 import com.almaraz_john.chat_online.infrastructure.adapters.output.persistence.entity.UserEntity;
@@ -18,32 +19,28 @@ import java.util.UUID;
 public class UserRepositoryImpl implements UserRepository {
 
     private final UserRepositoryJPA repositoryJPA;
-    private final UserPersistenceMapper mapper;
+    private final UserPersistenceMapper userMapper;
+    private final IdMapper idMapper;
 
 
     @Override
     public User createUser(User user) {
-        UserEntity entity = mapper.toEntity(user);
+        UserEntity entity = userMapper.toEntity(user);
 
-        return mapper.toDomain(repositoryJPA.save(entity));
+        return userMapper.toDomain(repositoryJPA.save(entity));
     }
 
     @Override
     public Optional<User> getUserByID(ID userID) {
         Optional<UserEntity> entity = repositoryJPA.findById(userID.getValue());
 
-        return entity.map(mapper::toDomain);
+        return entity.map(userMapper::toDomain);
     }
 
     @Override
     public List<User> getUsersByIDs(List<ID> userIDs) {
-        List<UUID> uuidList = new ArrayList<>();
+        List<UUID> uuidList = idMapper.listIdToUUID(userIDs);
 
-        for (ID id:userIDs){
-            uuidList.add(id.getValue());
-        }
-
-        //return mapper.toListDomain(repositoryJPA.findUserById(uuidList));
-        return null;
+        return userMapper.toListDomain(repositoryJPA.findAllById(uuidList));
     }
 }
